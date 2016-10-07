@@ -1,8 +1,6 @@
-# Otp::Qr
+# Otp-Qr
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/otp/qr`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Simple wrapper for implement otp (one time password) and create a qr code for use e.g with google authenticator
 
 ## Installation
 
@@ -22,15 +20,36 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Create a otp.rb file in initializers folder and put this
+```ruby
+OTP = OTP::QR.new('base32secret3232','issuer name')
+```
+Then you can access to OTP anywhere, e.g rails controller
+```ruby
+class HomeController < ApplicationController
 
-## Development
+  def index
+    OTP.current_code # => 123456
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+    OTP.validate_code(123456) # => true
+    OTP.validate_code(298765) # => false
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+    OTP.generate_qr('myemail@email.com')
+    # or you can pass a custom size and margin
+    OTP.generate_qr('myemail@email.com', "150x150", 4)
+  end
+end
+
+```
+``OTP.generate_qr('myemail@email.com')`` will return a string (https://chart.googleapis.com/chart?cht=qr&chl=otpauth%3A%2F%2Ftotp%2Fissuer%2520name%3Amyemail%40email.com%3Fsecret%3Dbase32secret3232%26issuer%3Dissuer%2Bname&chs=150x150&chld=L%7C4) that contain a qr code
+
+![alt tag](https://raw.githubusercontent.com/patriciojofre/otp-qr/master/docs/qr.png)
+
+if you use google authenticator, this app will show a random code
+
+![alt tag](https://raw.githubusercontent.com/patriciojofre/otp-qr/master/docs/google-authenticator.png)
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/otp-qr.
+Bug reports and pull requests are welcome on GitHub at https://github.com/patriciojofre/otp-qr.
 
