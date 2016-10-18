@@ -20,22 +20,34 @@ Or install it yourself as:
 
 ## Usage
 
-Create a otp.rb file in initializers folder and put this
+1- Create a otp.rb file in initializers folder and put this
 ```ruby
 ActsAsOTPable.configure do |config|
-  config.issuer       = 'your issuer name'
+  config.issuer       = 'Patricio Jofre' # your issuer name
   config.size         = '150x150'
   config.margin       = 0
 end
 ```
-In your user model add ``include ActsAsOTPable``
+
+More info about QR codes: https://developers.google.com/chart/infographics/docs/qr_codes
+
+2- In your user model add ``include ActsAsOTPable``
 ```ruby
 class User < ActiveRecord::Base
   include ActsAsOTPable
   
 end
 ```
-then from your controller you can access to the following methods
+3- Run migration
+```ruby
+class AddOtpFieldsToUser < ActiveRecord::Migration
+  def change
+    add_column :users, :email, :string # remove if exists
+    add_column :users, :secret, :string # this field store 16 character base32 secret
+  end
+end
+```
+4- From your controller you can access to the following methods
 ```ruby
 class HomeController < ApplicationController
 
